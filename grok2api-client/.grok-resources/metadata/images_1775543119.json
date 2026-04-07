@@ -1,0 +1,11 @@
+{
+  "model": "grok-imagine-1.0",
+  "prompt": "A mountain landscape",
+  "n": 1,
+  "size": "1792x1024",
+  "response_format": "url",
+  "timestamp": 1775543119,
+  "files": [
+    ".grok-resources/images/image_1775543119_0.png"
+  ]
+}

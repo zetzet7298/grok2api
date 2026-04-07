@@ -1,0 +1,126 @@
+# Grok2API Client Skill Information
+
+## Skill Metadata
+
+- **Name:** grok2api-client
+- **Version:** 1.0.0
+- **Author:** Kiro AI Assistant
+- **Created:** 2026-04-07
+- **Type:** API Client / Command Line Tool
+- **Language:** Python 3.7+
+
+## Purpose
+
+Provides complete command-line access to Grok2API reverse proxy for:
+- Chat completions with all Grok models
+- Image generation and editing
+- Video creation
+- Admin and token management
+- Automatic output management to .grok-resources folder
+
+## Trigger Keywords
+
+This skill should activate when users mention:
+- Grok API, Grok2API
+- Chat with Grok, Grok models
+- Generate images, Grok Imagine
+- Create videos, video generation
+- Image editing, edit images
+- API tokens, token management
+- curl to Grok API
+- Save to .grok-resources
+
+## Components
+
+### Scripts (5 files)
+1. `grok_chat.py` - Chat completions
+2. `grok_image.py` - Image generation
+3. `grok_video.py` - Video creation
+4. `grok_admin.py` - Admin operations
+5. `test_connection.py` - Connection tester
+
+### Documentation (6 files)
+1. `SKILL.md` - Main skill documentation
+2. `README.md` - User guide with examples
+3. `QUICKSTART.md` - 5-minute getting started
+4. `INSTALL.md` - Installation instructions
+5. `SUMMARY.md` - Overview
+6. `api-endpoints.md` - Complete API reference
+
+### Test Cases (1 file)
+- `evals.json` - 3 test scenarios
+
+## Key Features
+
+✅ All Grok models supported (3, 4, 4.1 variants)
+✅ Streaming and non-streaming modes
+✅ Automatic file downloads and saving
+✅ Complete metadata tracking
+✅ Error handling and retries
+✅ Environment variable support
+✅ Detailed help for each script
+
+## Output Management
+
+All API responses automatically saved to `.grok-resources/`:
+- Chat responses → `.grok-resources/chat/`
+- Images → `.grok-resources/images/`
+- Videos → `.grok-resources/videos/`
+- Metadata → `.grok-resources/metadata/`
+
+## Dependencies
+
+- Python 3.7+
+- requests library
+- Grok2API server running
+
+## Usage Patterns
+
+### Simple
+```bash
+python scripts/grok_chat.py --model grok-4 --message "Hello"
+```
+
+### Advanced
+```bash
+python scripts/grok_image.py \
+  --prompt "Complex scene" \
+  --model grok-imagine-1.0-fast \
+  --n 6 \
+  --size 1024x1024 \
+  --stream
+```
+
+## Integration Points
+
+- Works with any Grok2API server
+- Compatible with OpenAI API format
+- Can be used in shell scripts
+- Supports CI/CD pipelines
+- Easy to extend with new scripts
+
+## Maintenance
+
+- Scripts are self-contained
+- No external config files required
+- Environment variables optional
+- Clear error messages
+- Comprehensive logging
+
+## Future Enhancements
+
+Potential additions:
+- Batch processing scripts
+- Image editing script
+- WebSocket support for function pages
+- Configuration file support
+- Progress bars for downloads
+- Retry logic with exponential backoff
+
+## Notes
+
+- All scripts include `--help` flag
+- Metadata files contain full request/response
+- Scripts handle streaming automatically
+- Downloads are resumable (if server supports)
+- Output directory created automatically

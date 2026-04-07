@@ -478,20 +478,26 @@ class ImageCollectProcessor(BaseProcessor):
         """Process and collect images."""
         images = []
         idle_timeout = get_config("image.stream_timeout")
+        line_count = 0
 
         try:
             async for line in _with_idle_timeout(response, idle_timeout, self.model):
                 line = _normalize_line(line)
                 if not line:
                     continue
+                line_count += 1
                 try:
                     data = orjson.loads(line)
+                    if line_count <= 5 or "modelResponse" in str(data):
+                        logger.info(f"Image edit line {line_count}: {data}")
                 except orjson.JSONDecodeError:
+                    logger.warning(f"Failed to parse JSON line: {line[:200]}")
                     continue
 
                 resp = data.get("result", {}).get("response", {})
 
                 if mr := resp.get("modelResponse"):
+                    logger.info(f"Image edit modelResponse found: {mr}")
                     if urls := _collect_images(mr):
                         for url in urls:
                             if self.response_format == "url":
@@ -535,6 +541,7 @@ class ImageCollectProcessor(BaseProcessor):
         finally:
             await self.close()
 
+        logger.info(f"Image edit collect completed: {len(images)} images collected from {line_count} lines")
         return images
 
 

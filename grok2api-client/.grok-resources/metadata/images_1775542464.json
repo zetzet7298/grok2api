@@ -1,0 +1,14 @@
+{
+  "model": "grok-imagine-1.0",
+  "prompt": "A cute robot playing with a cat",
+  "n": 4,
+  "size": "1024x1024",
+  "response_format": "url",
+  "timestamp": 1775542464,
+  "files": [
+    ".grok-resources/images/image_1775542464_0.png",
+    ".grok-resources/images/image_1775542464_1.png",
+    ".grok-resources/images/image_1775542464_2.png",
+    ".grok-resources/images/image_1775542464_3.png"
+  ]
+}

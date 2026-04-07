@@ -61,6 +61,20 @@ def _collect_images(obj: Any) -> List[str]:
                     elif isinstance(item, str):
                         add(item)
                     continue
+                # Handle cardAttachmentsJson for image edit
+                if key == "cardAttachmentsJson" and isinstance(item, list):
+                    for card_json in item:
+                        if isinstance(card_json, str):
+                            try:
+                                import orjson
+                                card = orjson.loads(card_json)
+                                if isinstance(card, dict):
+                                    # Extract imageUrl from image_chunk
+                                    if chunk := card.get("image_chunk"):
+                                        if isinstance(chunk, dict) and (url := chunk.get("imageUrl")):
+                                            add(url)
+                            except Exception:
+                                pass
                 walk(item)
         elif isinstance(value, list):
             for item in value:

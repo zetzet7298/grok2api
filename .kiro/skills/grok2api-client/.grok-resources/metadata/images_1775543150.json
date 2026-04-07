@@ -1,0 +1,11 @@
+{
+  "model": "grok-imagine-1.0-fast",
+  "prompt": "A fast car",
+  "n": 1,
+  "size": "1024x1024",
+  "response_format": "url",
+  "timestamp": 1775543150,
+  "files": [
+    ".grok-resources/images/image_1775543150_0.png"
+  ]
+}

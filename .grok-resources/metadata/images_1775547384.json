@@ -1,0 +1,11 @@
+{
+  "model": "grok-imagine-1.0-fast",
+  "prompt": "A highly detailed photorealistic scene of a futuristic cyberpunk city at night with neon lights reflecting on wet streets, flying cars in the sky, holographic advertisements, people with cybernetic enhancements walking on sidewalks, rain falling, dramatic lighting, cinematic composition, 8k quality",
+  "n": 1,
+  "size": "1792x1024",
+  "response_format": "b64_json",
+  "timestamp": 1775547384,
+  "files": [
+    ".grok-resources/images/image_1775547384_0.png"
+  ]
+}

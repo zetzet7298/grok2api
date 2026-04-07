@@ -1,0 +1,23 @@
+{
+  "skill_name": "grok2api-client",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I need to chat with Grok 4 and ask it to explain quantum computing in simple terms. Save the response to .grok-resources folder.",
+      "expected_output": "Should execute grok_chat.py script with appropriate parameters, get response from Grok 4, and save to .grok-resources/chat/ folder",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Generate 3 images of a futuristic cyberpunk city at night with neon lights using Grok Imagine Fast. I want them in 1024x1024 size.",
+      "expected_output": "Should execute grok_image.py with grok-imagine-1.0-fast model, n=3, appropriate prompt, and save images to .grok-resources/images/",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Create a 10-second video of a cat walking through a cyberpunk street in 16:9 aspect ratio with high quality.",
+      "expected_output": "Should execute grok_video.py with appropriate parameters, generate video, download it, and save to .grok-resources/videos/",
+      "files": []
+    }
+  ]
+}

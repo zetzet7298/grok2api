@@ -1,0 +1,87 @@
+{
+  "timestamp": 1775543786,
+  "total": 13,
+  "passed": 7,
+  "failed": 6,
+  "pass_rate": 53.84615384615385,
+  "tests": [
+    {
+      "name": "Connection Test",
+      "passed": true,
+      "duration": 0.16257953643798828,
+      "message": ""
+    },
+    {
+      "name": "Chat Basic",
+      "passed": true,
+      "duration": 1.9019477367401123,
+      "message": ""
+    },
+    {
+      "name": "Chat Streaming",
+      "passed": true,
+      "duration": 1.675699234008789,
+      "message": ""
+    },
+    {
+      "name": "Image Gen: Basic (1 image)",
+      "passed": true,
+      "duration": 8.276527404785156,
+      "message": ""
+    },
+    {
+      "name": "Image Gen: Multiple (2 images)",
+      "passed": false,
+      "duration": 0.14477801322937012,
+      "message": "\ud83c\udfa8 Generating 2 image(s) with grok-imagine-1.0...\n\ud83d\udcdd Prompt: A blue sky\n\ud83d\udcd0 Size: 1024x1024\n\u274c Request failed: 429 Client Error: Too Many Requests for url: http://localhost:8011/v1/images/generations\n\n\u274c No"
+    },
+    {
+      "name": "Image Gen: Size 1792x1024",
+      "passed": false,
+      "duration": 0.13489651679992676,
+      "message": "\ud83c\udfa8 Generating 1 image(s) with grok-imagine-1.0...\n\ud83d\udcdd Prompt: A landscape\n\ud83d\udcd0 Size: 1792x1024\n\u274c Request failed: 429 Client Error: Too Many Requests for url: http://localhost:8011/v1/images/generations\n\n\u274c N"
+    },
+    {
+      "name": "Image Gen: Size 720x1280",
+      "passed": false,
+      "duration": 0.12132430076599121,
+      "message": "\ud83c\udfa8 Generating 1 image(s) with grok-imagine-1.0...\n\ud83d\udcdd Prompt: A portrait\n\ud83d\udcd0 Size: 720x1280\n\u274c Request failed: 429 Client Error: Too Many Requests for url: http://localhost:8011/v1/images/generations\n\n\u274c No "
+    },
+    {
+      "name": "Image Gen: Fast model",
+      "passed": false,
+      "duration": 0.1380932331085205,
+      "message": "\ud83c\udfa8 Generating 1 image(s) with grok-imagine-1.0-fast...\n\ud83d\udcdd Prompt: A car\n\ud83d\udcd0 Size: 1024x1024\n\u274c Request failed: 429 Client Error: Too Many Requests for url: http://localhost:8011/v1/images/generations\n\n\u274c No"
+    },
+    {
+      "name": "Image Gen: URL format",
+      "passed": false,
+      "duration": 0.13014459609985352,
+      "message": "\ud83c\udfa8 Generating 1 image(s) with grok-imagine-1.0...\n\ud83d\udcdd Prompt: A flower\n\ud83d\udcd0 Size: 1024x1024\n\u274c Request failed: 429 Client Error: Too Many Requests for url: http://localhost:8011/v1/images/generations\n\n\u274c No i"
+    },
+    {
+      "name": "Image Edit",
+      "passed": false,
+      "duration": 0.19946694374084473,
+      "message": "\u270f\ufe0f  Editing 1 image(s) with grok-imagine-1.0-edit...\n\ud83d\udcdd Prompt: Add a rainbow\n\ud83d\udcd0 Size: 1024x1024\n\ud83d\udd22 Generating 1 variation(s) per image\n\u274c Request failed: 429 Client Error: Too Many Requests for url: http"
+    },
+    {
+      "name": "Admin: List Tokens",
+      "passed": true,
+      "duration": 0.1270596981048584,
+      "message": ""
+    },
+    {
+      "name": "Admin: Cache Info",
+      "passed": true,
+      "duration": 0.12962722778320312,
+      "message": ""
+    },
+    {
+      "name": "Admin: Get Config",
+      "passed": true,
+      "duration": 0.13663840293884277,
+      "message": ""
+    }
+  ]
+}

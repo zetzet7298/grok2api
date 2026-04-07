@@ -1,0 +1,13 @@
+{
+  "model": "grok-3-mini",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Count from 1 to 5, one number per line."
+    }
+  ],
+  "temperature": 0.3,
+  "top_p": 0.95,
+  "timestamp": 1775542210,
+  "stream": true
+}

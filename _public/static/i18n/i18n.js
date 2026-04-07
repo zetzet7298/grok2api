@@ -8,8 +8,8 @@
   'use strict';
 
   var STORAGE_KEY = 'grok2api_lang';
-  var SUPPORTED = ['zh', 'en'];
-  var DEFAULT = 'zh';
+  var SUPPORTED = ['zh', 'en', 'vi'];
+  var DEFAULT = 'vi';
 
   var lang = DEFAULT;
   var data = {};

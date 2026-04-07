@@ -1,0 +1,29 @@
+{
+  "model": "grok-3-mini",
+  "messages": [
+    {
+      "role": "user",
+      "content": "What is 2+2? Answer in one short sentence."
+    }
+  ],
+  "temperature": 0.3,
+  "top_p": 0.95,
+  "timestamp": 1775542183,
+  "stream": false,
+  "usage": {
+    "prompt_tokens": 15,
+    "completion_tokens": 5,
+    "total_tokens": 20,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "text_tokens": 15,
+      "audio_tokens": 0,
+      "image_tokens": 0
+    },
+    "completion_tokens_details": {
+      "text_tokens": 5,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0
+    }
+  }
+}

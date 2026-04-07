@@ -1,0 +1,13 @@
+{
+  "model": "grok-4",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Say 'test successful' and nothing else"
+    }
+  ],
+  "temperature": 0.8,
+  "top_p": 0.95,
+  "timestamp": 1775543648,
+  "stream": true
+}

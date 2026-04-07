@@ -1,0 +1,11 @@
+{
+  "model": "grok-imagine-1.0-fast",
+  "prompt": "A magical forest scene",
+  "n": 1,
+  "size": "1024x1024",
+  "response_format": "b64_json",
+  "timestamp": 1775547301,
+  "files": [
+    ".grok-resources/images/image_1775547301_0.png"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "model": "grok-imagine-1.0-fast",
+  "prompt": "A beautiful mountain landscape",
+  "n": 1,
+  "size": "1280x720",
+  "response_format": "b64_json",
+  "timestamp": 1775547237,
+  "files": [
+    ".grok-resources/images/image_1775547237_0.png"
+  ]
+}

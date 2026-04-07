@@ -1,0 +1,7 @@
+Đây là bức ảnh miêu tả một hình vuông màu trắng lớn, có viền đen đậm, được đặt ở chính giữa nền màu xanh dương nhạt (xanh pastel).
+
+Bên trong hình vuông trắng, ở vị trí trung tâm, có chữ **TEST** được viết bằng font chữ đen, đơn giản và rõ ràng.
+
+Toàn bộ bố cục rất tối giản (minimalist), với không gian trắng lớn xung quanh chữ TEST bên trong khung vuông. Nền ngoài khung là màu xanh nhạt đồng đều, tạo cảm giác sạch sẽ và rõ ràng.
+
+Tóm lại, đây là một hình ảnh kiểm tra (test image) rất cơ bản, thường dùng để kiểm tra hiển thị hình ảnh, căn giữa, hoặc màu sắc trong thiết kế đồ họa.

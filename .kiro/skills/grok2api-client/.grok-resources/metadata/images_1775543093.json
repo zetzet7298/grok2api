@@ -1,0 +1,12 @@
+{
+  "model": "grok-imagine-1.0",
+  "prompt": "A blue ocean wave",
+  "n": 2,
+  "size": "1024x1024",
+  "response_format": "url",
+  "timestamp": 1775543093,
+  "files": [
+    ".grok-resources/images/image_1775543093_0.png",
+    ".grok-resources/images/image_1775543093_1.png"
+  ]
+}

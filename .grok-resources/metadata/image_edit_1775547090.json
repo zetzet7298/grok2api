@@ -1,0 +1,23 @@
+{
+  "timestamp": 1775547090,
+  "prompt": "Th\u00eam m\u1ed9t con m\u00e8o d\u1ec5 th\u01b0\u01a1ng m\u00e0u cam",
+  "model": "grok-imagine-1.0-edit",
+  "n": 1,
+  "size": "1024x1024",
+  "response_format": "b64_json",
+  "source_images": [
+    ".grok-resources/images/image_1775546396_0.png"
+  ],
+  "output_files": [
+    ".grok-resources/images/image_edit_1775547090_0.png"
+  ],
+  "usage": {
+    "total_tokens": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "input_tokens_details": {
+      "text_tokens": 0,
+      "image_tokens": 0
+    }
+  }
+}

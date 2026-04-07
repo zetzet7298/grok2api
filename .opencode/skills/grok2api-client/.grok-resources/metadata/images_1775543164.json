@@ -1,0 +1,13 @@
+{
+  "model": "grok-imagine-1.0",
+  "prompt": "A cyberpunk city with neon lights, flying cars, and holographic advertisements",
+  "n": 3,
+  "size": "1024x1024",
+  "response_format": "url",
+  "timestamp": 1775543164,
+  "files": [
+    ".grok-resources/images/image_1775543164_0.png",
+    ".grok-resources/images/image_1775543164_1.png",
+    ".grok-resources/images/image_1775543164_2.png"
+  ]
+}

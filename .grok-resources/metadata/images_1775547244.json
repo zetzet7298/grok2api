@@ -1,0 +1,11 @@
+{
+  "model": "grok-imagine-1.0-fast",
+  "prompt": "A wide panoramic ocean view",
+  "n": 1,
+  "size": "1792x1024",
+  "response_format": "b64_json",
+  "timestamp": 1775547244,
+  "files": [
+    ".grok-resources/images/image_1775547244_0.png"
+  ]
+}

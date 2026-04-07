@@ -1,0 +1,11 @@
+{
+  "model": "grok-imagine-1.0",
+  "prompt": "A portrait",
+  "n": 1,
+  "size": "720x1280",
+  "response_format": "url",
+  "timestamp": 1775543685,
+  "files": [
+    ".grok-resources/images/image_1775543685_0.png"
+  ]
+}

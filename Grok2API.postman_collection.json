@@ -1,0 +1,678 @@
+{
+  "info": {
+    "_postman_id": "grok2api-collection",
+    "name": "Grok2API",
+    "description": "Grok2API - Grok Reverse Proxy Collection\n\nBase URL: http://localhost:8011\nAdmin Password: grok2api",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{api_key}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8011",
+      "type": "string"
+    },
+    {
+      "key": "api_key",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "admin_key",
+      "value": "grok2api",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Core",
+      "item": [
+        {
+          "name": "List Models",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/v1/models",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "models"]
+            },
+            "description": "List all available Grok models"
+          }
+        },
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            },
+            "description": "Check service health"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Chat",
+      "item": [
+        {
+          "name": "grok-3",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"model\": \"grok-3\",\n  \"messages\": [\n    {\"role\": \"user\", \"content\": \"Hello\"}\n  ],\n  \"stream\": true,\n  \"max_tokens\": 500,\n  \"temperature\": 0.7\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/v1/chat/completions",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "chat", "completions"]
+            },
+            "description": "Chat with Grok 3"
+          }
+        },
+        {
+          "name": "grok-3-mini",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"model\": \"grok-3-mini\",\n  \"messages\": [\n    {\"role\": \"user\", \"content\": \"Hello\"}\n  ],\n  \"stream\": true,\n  \"max_tokens\": 500,\n  \"temperature\": 0.7\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/v1/chat/completions",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "chat", "completions"]
+            },
+            "description": "Chat with Grok 3 Mini (faster, fewer tokens)"
+          }
+        },
+        {
+          "name": "grok-3-thinking",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"model\": \"grok-3-thinking\",\n  \"messages\": [\n    {\"role\": \"user\", \"content\": \"Explain quantum computing\"}\n  ],\n  \"stream\": true,\n  \"max_tokens\": 1000,\n  \"temperature\": 0.7\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/v1/chat/completions",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "chat", "completions"]
+            },
+            "description": "Chat with Grok 3 with chain of thought"
+          }
+        },
+        {
+          "name": "grok-4",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"model\": \"grok-4\",\n  \"messages\": [\n    {\"role\": \"user\", \"content\": \"Hello\"}\n  ],\n  \"stream\": true,\n  \"max_tokens\": 500,\n  \"temperature\": 0.7\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/v1/chat/completions",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "chat", "completions"]
+            },
+            "description": "Chat with Grok 4"
+          }
+        },
+        {
+          "name": "grok-4-thinking",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"model\": \"grok-4-thinking\",\n  \"messages\": [\n    {\"role\": \"user\", \"content\": \"Explain quantum computing\"}\n  ],\n  \"stream\": true,\n  \"max_tokens\": 1000,\n  \"temperature\": 0.7\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/v1/chat/completions",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "chat", "completions"]
+            },
+            "description": "Chat with Grok 4 with chain of thought"
+          }
+        },
+        {
+          "name": "grok-4-heavy",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"model\": \"grok-4-heavy\",\n  \"messages\": [\n    {\"role\": \"user\", \"content\": \"Write a detailed essay about AI\"}\n  ],\n  \"stream\": true,\n  \"max_tokens\": 2000,\n  \"temperature\": 0.7\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/v1/chat/completions",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "chat", "completions"]
+            },
+            "description": "Chat with Grok 4 Heavy (most powerful)"
+          }
+        },
+        {
+          "name": "grok-4.1-mini",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"model\": \"grok-4.1-mini\",\n  \"messages\": [\n    {\"role\": \"user\", \"content\": \"Hello\"}\n  ],\n  \"stream\": true,\n  \"max_tokens\": 500,\n  \"temperature\": 0.7\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/v1/chat/completions",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "chat", "completions"]
+            },
+            "description": "Chat with Grok 4.1 Mini"
+          }
+        },
+        {
+          "name": "grok-4.1-fast",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"model\": \"grok-4.1-fast\",\n  \"messages\": [\n    {\"role\": \"user\", \"content\": \"Hello\"}\n  ],\n  \"stream\": true,\n  \"max_tokens\": 500,\n  \"temperature\": 0.7\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/v1/chat/completions",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "chat", "completions"]
+            },
+            "description": "Chat with Grok 4.1 Fast"
+          }
+        },
+        {
+          "name": "grok-4.1-expert",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"model\": \"grok-4.1-expert\",\n  \"messages\": [\n    {\"role\": \"user\", \"content\": \"Explain advanced physics concepts\"}\n  ],\n  \"stream\": true,\n  \"max_tokens\": 1000,\n  \"temperature\": 0.7\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/v1/chat/completions",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "chat", "completions"]
+            },
+            "description": "Chat with Grok 4.1 Expert"
+          }
+        },
+        {
+          "name": "grok-4.1-thinking",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"model\": \"grok-4.1-thinking\",\n  \"messages\": [\n    {\"role\": \"user\", \"content\": \"Solve this math problem step by step\"}\n  ],\n  \"stream\": true,\n  \"max_tokens\": 1000,\n  \"temperature\": 0.7\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/v1/chat/completions",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "chat", "completions"]
+            },
+            "description": "Chat with Grok 4.1 with chain of thought"
+          }
+        },
+        {
+          "name": "grok-4.20-beta",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"model\": \"grok-4.20-beta\",\n  \"messages\": [\n    {\"role\": \"user\", \"content\": \"Hello\"}\n  ],\n  \"stream\": true,\n  \"max_tokens\": 500,\n  \"temperature\": 0.7\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/v1/chat/completions",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "chat", "completions"]
+            },
+            "description": "Chat with Grok 4.20 Beta"
+          }
+        },
+        {
+          "name": "Chat with System Prompt",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"model\": \"grok-3-mini\",\n  \"messages\": [\n    {\"role\": \"system\", \"content\": \"You are a helpful assistant that speaks Vietnamese.\"},\n    {\"role\": \"user\", \"content\": \"Xin chao\"}\n  ],\n  \"stream\": true,\n  \"max_tokens\": 500,\n  \"temperature\": 0.7,\n  \"top_p\": 0.9\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/v1/chat/completions",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "chat", "completions"]
+            },
+            "description": "Chat with system prompt and custom parameters"
+          }
+        },
+        {
+          "name": "Chat Non-Stream",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"model\": \"grok-3-mini\",\n  \"messages\": [\n    {\"role\": \"user\", \"content\": \"Hello\"}\n  ],\n  \"stream\": false,\n  \"max_tokens\": 500\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/v1/chat/completions",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "chat", "completions"]
+            },
+            "description": "Chat without streaming (returns full response)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Responses API",
+      "item": [
+        {
+          "name": "grok-4 (Responses)",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"model\": \"grok-4\",\n  \"input\": \"Explain quantum computing\",\n  \"stream\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/v1/responses",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "responses"]
+            },
+            "description": "OpenAI Responses API compatible endpoint"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Image",
+      "item": [
+        {
+          "name": "grok-imagine-1.0",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"model\": \"grok-imagine-1.0\",\n  \"prompt\": \"A futuristic city with neon lights at night, cyberpunk style, wide angle photography\",\n  \"n\": 1,\n  \"size\": \"1024x1024\",\n  \"response_format\": \"url\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/v1/images/generations",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "images", "generations"]
+            },
+            "description": "Generate image with Grok Imagine 1.0"
+          }
+        },
+        {
+          "name": "grok-imagine-1.0-fast",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"model\": \"grok-imagine-1.0-fast\",\n  \"prompt\": \"A futuristic city with neon lights at night, cyberpunk style, wide angle photography\",\n  \"n\": 4,\n  \"size\": \"1024x1024\",\n  \"response_format\": \"url\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/v1/images/generations",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "images", "generations"]
+            },
+            "description": "Generate image with Grok Imagine 1.0 Fast (faster, supports multiple images)"
+          }
+        },
+        {
+          "name": "grok-imagine-1.0-edit",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"model\": \"grok-imagine-1.0-edit\",\n  \"prompt\": \"Change the background to a sunset beach\",\n  \"image_url\": [\n    \"https://example.com/image.jpg\"\n  ],\n  \"response_format\": \"url\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/v1/images/edits",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "images", "edits"]
+            },
+            "description": "Edit image with Grok Imagine 1.0 (requires image_url)"
+          }
+        },
+        {
+          "name": "grok-imagine-1.0-video",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"model\": \"grok-imagine-1.0-video\",\n  \"prompt\": \"@image1 A cat walking through a neon-lit cyberpunk city street, cinematic slow motion\",\n  \"image_url\": [\n    \"https://example.com/image.jpg\"\n  ],\n  \"response_format\": \"url\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/v1/images/generations",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "images", "generations"]
+            },
+            "description": "Generate video from image/text with Grok Imagine 1.0 Video"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Video",
+      "item": [
+        {
+          "name": "Start Video Generation",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"prompt\": \"@image1 A cat walking through a neon-lit cyberpunk city street, cinematic slow motion\",\n  \"image_url\": [\n    \"https://example.com/image.jpg\"\n  ],\n  \"aspect_ratio\": \"16:9\",\n  \"duration\": 6,\n  \"resolution\": \"720p\",\n  \"style_preset\": \"cinematic\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/v1/video/start",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "video", "start"]
+            },
+            "description": "Start video generation task"
+          }
+        },
+        {
+          "name": "Video SSE Stream",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/v1/video/sse",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "video", "sse"]
+            },
+            "description": "Stream video generation progress via SSE"
+          }
+        },
+        {
+          "name": "Stop Video Generation",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{base_url}}/v1/video/stop",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "video", "stop"]
+            },
+            "description": "Stop video generation task"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "List Tokens",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{admin_key}}"}],
+            "url": {
+              "raw": "{{base_url}}/v1/admin/tokens",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "admin", "tokens"]
+            },
+            "description": "List all tokens in the pool"
+          }
+        },
+        {
+          "name": "Add Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{admin_key}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...\",\n  \"pool\": \"ssoBasic\",\n  \"note\": \"My token\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/v1/admin/tokens",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "admin", "tokens"]
+            },
+            "description": "Add a new token to the pool"
+          }
+        },
+        {
+          "name": "Refresh Tokens",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{admin_key}}"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{base_url}}/v1/admin/tokens/refresh",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "admin", "tokens", "refresh"]
+            },
+            "description": "Manually refresh all tokens"
+          }
+        },
+        {
+          "name": "Enable NSFW for Tokens",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{admin_key}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tokens\": [\"token1\", \"token2\"],\n  \"async\": false\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/v1/admin/tokens/nsfw/enable",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "admin", "tokens", "nsfw", "enable"]
+            },
+            "description": "Enable NSFW mode for selected tokens"
+          }
+        },
+        {
+          "name": "Get Config",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{admin_key}}"}],
+            "url": {
+              "raw": "{{base_url}}/v1/admin/config",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "admin", "config"]
+            },
+            "description": "Get current configuration"
+          }
+        },
+        {
+          "name": "Update Config",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{admin_key}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"proxy\": {\n    \"cf_cookies\": \"__cf_bm=...\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/v1/admin/config",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "admin", "config"]
+            },
+            "description": "Update configuration"
+          }
+        },
+        {
+          "name": "Get Storage Info",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{admin_key}}"}],
+            "url": {
+              "raw": "{{base_url}}/v1/admin/storage",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "admin", "storage"]
+            },
+            "description": "Get storage backend information"
+          }
+        },
+        {
+          "name": "Get Cache Info",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{admin_key}}"}],
+            "url": {
+              "raw": "{{base_url}}/v1/admin/cache",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "admin", "cache"]
+            },
+            "description": "Get cache statistics"
+          }
+        },
+        {
+          "name": "List Cache Items",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{admin_key}}"}],
+            "url": {
+              "raw": "{{base_url}}/v1/admin/cache/list",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "admin", "cache", "list"]
+            },
+            "description": "List all cached items"
+          }
+        },
+        {
+          "name": "Clear Local Cache",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{admin_key}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"image\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/v1/admin/cache/clear",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "admin", "cache", "clear"]
+            },
+            "description": "Clear local cache (type: image, video, or all)"
+          }
+        },
+        {
+          "name": "Clear Online Cache",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{admin_key}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tokens\": [\"token1\", \"token2\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/v1/admin/cache/online/clear",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "admin", "cache", "online", "clear"]
+            },
+            "description": "Clear online assets cache for specific tokens"
+          }
+        },
+        {
+          "name": "Verify Admin Key",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{admin_key}}"}],
+            "url": {
+              "raw": "{{base_url}}/v1/admin/verify",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "admin", "verify"]
+            },
+            "description": "Verify admin key is valid"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Files",
+      "item": [
+        {
+          "name": "Get Image",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/v1/files/image/{filename}",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "files", "image", "{filename}"],
+              "variable": [
+                {"key": "filename", "value": "example.png"}
+              ]
+            },
+            "description": "Get a cached image file"
+          }
+        },
+        {
+          "name": "Get Video",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/v1/files/video/{filename}",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "files", "video", "{filename}"],
+              "variable": [
+                {"key": "filename", "value": "example.mp4"}
+              ]
+            },
+            "description": "Get a cached video file"
+          }
+        }
+      ]
+    }
+  ]
+}

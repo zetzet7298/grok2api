@@ -124,6 +124,7 @@ class AppChatReverse:
         tool_overrides: Dict[str, Any] = None,
         model_config_override: Dict[str, Any] = None,
         request_overrides: Dict[str, Any] = None,
+        custom_personality_override: str = None,
     ) -> Dict[str, Any]:
         """Build chat payload for Grok app-chat API."""
 
@@ -173,7 +174,7 @@ class AppChatReverse:
             payload.pop("modelName", None)
             payload.pop("modelMode", None)
 
-        custom_personality = AppChatReverse._resolve_custom_personality()
+        custom_personality = custom_personality_override or AppChatReverse._resolve_custom_personality()
         if custom_personality is not None:
             payload["customPersonality"] = custom_personality
 
@@ -199,6 +200,7 @@ class AppChatReverse:
         tool_overrides: Dict[str, Any] = None,
         model_config_override: Dict[str, Any] = None,
         request_overrides: Dict[str, Any] = None,
+        custom_personality_override: str = None,
     ) -> Any:
         """Send app chat request to Grok.
         
@@ -248,6 +250,7 @@ class AppChatReverse:
                 tool_overrides=tool_overrides,
                 model_config_override=model_config_override,
                 request_overrides=request_overrides,
+                custom_personality_override=custom_personality_override,
             )
             payload_summary = {
                 "model": payload.get("modelName"),

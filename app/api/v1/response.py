@@ -8,6 +8,7 @@ from fastapi import APIRouter
 from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel, Field
 
+from app.core.config import get_config
 from app.core.exceptions import ValidationException
 from app.services.grok.services.responses import ResponsesService
 
@@ -19,7 +20,7 @@ class ResponseCreateRequest(BaseModel):
     model: str = Field(..., description="Model name")
     input: Optional[Any] = Field(None, description="Input content")
     instructions: Optional[str] = Field(None, description="System instructions")
-    stream: Optional[bool] = Field(False, description="Stream response")
+    stream: Optional[bool] = Field(None, description="Stream response")
     max_output_tokens: Optional[int] = Field(None, description="Max output tokens")
     temperature: Optional[float] = Field(None, description="Sampling temperature")
     top_p: Optional[float] = Field(None, description="Nucleus sampling")
@@ -49,11 +50,13 @@ async def create_response(request: ResponseCreateRequest):
     if isinstance(request.reasoning, dict):
         reasoning_effort = request.reasoning.get("effort") or request.reasoning.get("reasoning_effort")
 
+    is_stream = request.stream if request.stream is not None else get_config("app.stream")
+
     result = await ResponsesService.create(
         model=request.model,
         input_value=request.input,
         instructions=request.instructions,
-        stream=bool(request.stream),
+        stream=bool(is_stream),
         temperature=request.temperature,
         top_p=request.top_p,
         tools=request.tools,
@@ -68,7 +71,7 @@ async def create_response(request: ResponseCreateRequest):
         truncation=request.truncation,
     )
 
-    if request.stream:
+    if is_stream:
         return StreamingResponse(
             result,
             media_type="text/event-stream",

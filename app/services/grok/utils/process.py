@@ -40,13 +40,30 @@ def _normalize_line(line: Any) -> Optional[str]:
 
 
 def _collect_images(obj: Any) -> List[str]:
-    """递归收集响应中的图片 URL"""
+    """递归收集响应中的图片 URL，优先返回最终图而不是 part-0 预览图。"""
     urls: List[str] = []
     seen = set()
 
+    def is_preview_url(url: str) -> bool:
+        return "-part-" in url
+
     def add(url: str):
-        if not url or url in seen:
+        if not url:
             return
+        if url in seen:
+            return
+
+        if is_preview_url(url):
+            final_candidate = url.replace("-part-0/", "/")
+            if final_candidate in seen:
+                return
+
+        if not is_preview_url(url):
+            preview_candidate = url.replace("/image.jpg", "-part-0/image.jpg")
+            if preview_candidate in seen:
+                seen.remove(preview_candidate)
+                urls[:] = [existing for existing in urls if existing != preview_candidate]
+
         seen.add(url)
         urls.append(url)
 
@@ -81,6 +98,7 @@ def _collect_images(obj: Any) -> List[str]:
                 walk(item)
 
     walk(obj)
+    urls.sort(key=lambda url: (is_preview_url(url), url))
     return urls
 
 

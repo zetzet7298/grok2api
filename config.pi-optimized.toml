@@ -1,0 +1,87 @@
+# ==================== Cấu hình tối ưu cho Pi & Coding Agents ====================
+# File này chứa các thiết lập được tối ưu hóa để làm việc với Pi và các Coding Agent khác
+# Copy nội dung này vào data/config.toml để áp dụng
+
+[app]
+# Tắt stream mặc định - nhiều client không hỗ trợ SSE tốt
+stream = false
+
+# Bật thinking để tách riêng phần suy nghĩ ra khỏi content chính
+thinking = true
+
+# Tắt temporary mode để giữ context giữa các lần chat
+temporary = false
+
+# Bật memory để Grok nhớ được ngữ cảnh
+disable_memory = false
+
+# Filter các thẻ XML rác để giao diện sạch hơn
+filter_tags = ["xaiartifact", "xai:tool_usage_card", "grok:render", "think"]
+
+# Bật function calling để tương tác với Pi tools
+function_enabled = true
+
+# Custom instruction to complement the auto-generated tool prompt
+custom_instruction = """You are a coding assistant that executes tasks by calling tools.
+
+When the user asks you to do something, call the appropriate tool immediately without explaining what you plan to do first. After the tool executes, you may provide a brief summary of the result.
+
+Do not use your built-in code_execution, web_search, or browse_page features. Only use the tools provided in the request.
+
+Be concise. Do not repeat tool calls. Each action should be performed exactly once."""
+
+[chat]
+# Tăng timeout cho các tác vụ phức tạp
+timeout = 120
+stream_timeout = 120
+# Giảm concurrent để tránh rate limit
+concurrent = 30
+
+[retry]
+# Tăng retry cho stability
+max_retry = 5
+retry_backoff_max = 30.0
+retry_budget = 120.0
+
+[log]
+# Bật logging để debug
+log_all_requests = true
+log_health_requests = false
+request_slow_ms = 5000
+
+[token]
+# Bật auto refresh để token luôn sẵn sàng
+auto_refresh = true
+# Giảm interval để refresh thường xuyên hơn
+refresh_interval_hours = 6
+super_refresh_interval_hours = 1
+# Bật on-demand refresh
+on_demand_refresh_enabled = true
+on_demand_refresh_min_interval_sec = 180
+
+# ==================== Proxy (nếu cần) ====================
+[proxy]
+# Uncomment nếu bạn cần proxy
+# base_proxy_url = "http://your-proxy:port"
+# asset_proxy_url = "http://your-proxy:port"
+# skip_proxy_ssl_verify = false
+
+# ==================== Image & Video ====================
+[image]
+# Tăng timeout cho image generation
+timeout = 90
+stream_timeout = 90
+# Bật NSFW nếu cần
+nsfw = true
+# Bật parallel attempts khi bị block
+blocked_parallel_enabled = true
+blocked_parallel_attempts = 3
+
+[video]
+# Tắt public asset để tiết kiệm quota
+enable_public_asset = false
+# Tăng timeout
+timeout = 120
+stream_timeout = 120
+# Chọn upscale timing phù hợp
+upscale_timing = "complete"

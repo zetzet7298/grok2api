@@ -31,6 +31,8 @@ from app.services.grok.utils.tool_call import (
     parse_tool_calls,
     parse_tool_call_block,
     format_tool_history,
+    ensure_tool_call_ids,
+    fix_missing_tool_responses,
 )
 from app.services.grok.utils.usage import estimate_chat_usage, estimate_prompt_tokens
 from app.services.token import get_token_manager, EffortType
@@ -41,8 +43,19 @@ _CHAT_SEM_VALUE = None
 
 
 def extract_tool_text(raw: str, rollout_id: str = "") -> str:
+    """Extract and format tool usage text, filtering out Grok internal tools"""
     if not raw:
         return ""
+    
+    # List of Grok internal tools that should be filtered
+    INTERNAL_TOOLS = {
+        "code_execution",
+        "web_search", 
+        "browse_page",
+        "chatroom_send",
+        "search_images"
+    }
+    
     name_match = re.search(
         r"<xai:tool_name>(.*?)</xai:tool_name>", raw, flags=re.DOTALL
     )
@@ -53,6 +66,10 @@ def extract_tool_text(raw: str, rollout_id: str = "") -> str:
     name = name_match.group(1) if name_match else ""
     if name:
         name = re.sub(r"<!\[CDATA\[(.*?)\]\]>", r"\1", name, flags=re.DOTALL).strip()
+    
+    # Filter out internal tools - return empty to suppress completely
+    if name in INTERNAL_TOOLS:
+        return ""
 
     args = args_match.group(1) if args_match else ""
     if args:
@@ -69,20 +86,7 @@ def extract_tool_text(raw: str, rollout_id: str = "") -> str:
     text = args
     prefix = f"[{rollout_id}]" if rollout_id else ""
 
-    if name == "web_search":
-        label = f"{prefix}[WebSearch]"
-        if isinstance(payload, dict):
-            text = payload.get("query") or payload.get("q") or ""
-    elif name == "search_images":
-        label = f"{prefix}[SearchImage]"
-        if isinstance(payload, dict):
-            text = (
-                payload.get("image_description")
-                or payload.get("description")
-                or payload.get("query")
-                or ""
-            )
-    elif name == "chatroom_send":
+    if name == "chatroom_send":
         label = f"{prefix}[AgentThink]"
         if isinstance(payload, dict):
             text = payload.get("message") or ""
@@ -115,11 +119,13 @@ class MessageExtractor:
         tools: List[Dict[str, Any]] = None,
         tool_choice: Any = None,
         parallel_tool_calls: bool = True,
-    ) -> tuple[str, List[str], List[str]]:
-        """从 OpenAI 消息格式提取内容，返回 (text, file_attachments, image_attachments)"""
-        # Pre-process: convert tool-related messages to text format
+    ) -> tuple[str, List[str], List[str], str]:
+        """从 OpenAI 消息格式提取内容，返回 (text, file_attachments, image_attachments, tool_system_prompt)"""
+        # Pre-process: validate IDs, fix missing responses, then convert to text
         if tools:
-            messages = format_tool_history(messages)
+            ensure_tool_call_ids(messages)  # Fix invalid/missing tool call IDs in-place
+            messages = fix_missing_tool_responses(messages)  # Insert empty results for orphan calls
+            messages = format_tool_history(messages)  # Convert tool messages to text format
 
         texts = []
         file_attachments: List[str] = []
@@ -186,28 +192,8 @@ class MessageExtractor:
                         if raw:
                             file_attachments.append(raw)
 
-            # 保留工具调用轨迹，避免部分客户端在多轮工具会话中丢失上下文顺序
-            tool_calls = msg.get("tool_calls")
-            if role == "assistant" and not parts and isinstance(tool_calls, list):
-                for call in tool_calls:
-                    if not isinstance(call, dict):
-                        continue
-                    fn = call.get("function", {})
-                    if not isinstance(fn, dict):
-                        fn = {}
-                    name = fn.get("name") or call.get("name") or "tool"
-                    arguments = fn.get("arguments", "")
-                    if isinstance(arguments, (dict, list)):
-                        try:
-                            arguments = orjson.dumps(arguments).decode()
-                        except Exception:
-                            arguments = str(arguments)
-                    if not isinstance(arguments, str):
-                        arguments = str(arguments)
-                    arguments = arguments.strip()
-                    parts.append(
-                        f"[tool_call] {name} {arguments}".strip()
-                    )
+            # NOTE: Tool call traces are now handled by format_tool_history() which runs
+            # before extraction. The old [tool_call] fallback is removed to avoid duplicates.
 
             if parts:
                 role_label = role
@@ -241,13 +227,14 @@ class MessageExtractor:
         if (not combined.strip()) and (file_attachments or image_attachments):
             combined = "Refer to the following content:"
 
-        # Prepend tool system prompt if tools are provided
+        # Build tool system prompt separately (will be merged with customPersonality)
+        tool_system_prompt = ""
         if tools:
             tool_prompt = build_tool_prompt(tools, tool_choice, parallel_tool_calls)
             if tool_prompt:
-                combined = f"{tool_prompt}\n\n{combined}"
+                tool_system_prompt = tool_prompt
 
-        return combined, file_attachments, image_attachments
+        return combined, file_attachments, image_attachments, tool_system_prompt
 
 
 class GrokChatService:
@@ -264,6 +251,7 @@ class GrokChatService:
         tool_overrides: Dict[str, Any] = None,
         model_config_override: Dict[str, Any] = None,
         request_overrides: Dict[str, Any] = None,
+        custom_personality_override: str = None,
     ):
         """发送聊天请求"""
         if stream is None:
@@ -288,6 +276,7 @@ class GrokChatService:
                 tool_overrides=tool_overrides,
                 model_config_override=model_config_override,
                 request_overrides=request_overrides,
+                custom_personality_override=custom_personality_override,
             )
             logger.info(f"Chat connected: model={model}, stream={stream}")
         except Exception:
@@ -328,14 +317,12 @@ class GrokChatService:
         grok_model = model_info.grok_model
         mode = model_info.model_mode
         # 提取消息和附件
-        message, file_attachments, image_attachments = MessageExtractor.extract(
+        message, file_attachments, image_attachments, tool_system_prompt = MessageExtractor.extract(
             messages, tools=tools, tool_choice=tool_choice, parallel_tool_calls=parallel_tool_calls
         )
         logger.debug(
-            "Extracted message length=%s, files=%s, images=%s",
-            len(message),
-            len(file_attachments),
-            len(image_attachments),
+            f"Extracted: msg_len={len(message)}, files={len(file_attachments)}, "
+            f"images={len(image_attachments)}, tool_prompt_len={len(tool_system_prompt)}"
         )
 
         # 上传附件
@@ -365,6 +352,27 @@ class GrokChatService:
         if reasoning_effort is not None:
             model_config_override["reasoningEffort"] = reasoning_effort
 
+        # Build custom personality: merge tool prompt with custom_instruction
+        custom_personality_override = None
+        if tool_system_prompt:
+            base_instruction = get_config("app.custom_instruction", "")
+            if base_instruction:
+                # Tool prompt goes first, then custom instruction
+                custom_personality_override = f"{tool_system_prompt}\n\n{base_instruction}"
+            else:
+                custom_personality_override = tool_system_prompt
+
+
+
+
+        # When external tools are provided, disable Grok's internal code execution
+        # to force the model to use our <tool_call> format instead of its built-in tools
+        effective_tool_overrides = None
+        if tools:
+            effective_tool_overrides = {
+                "codeExecution": False,
+            }
+
         response = await self.chat(
             token,
             message,
@@ -372,8 +380,9 @@ class GrokChatService:
             mode,
             stream,
             file_attachments=all_attachments,
-            tool_overrides=None,
+            tool_overrides=effective_tool_overrides,
             model_config_override=model_config_override,
+            custom_personality_override=custom_personality_override,
         )
 
         prompt_tokens = estimate_prompt_tokens(message)
@@ -630,14 +639,28 @@ class StreamProcessor(proc_base.BaseProcessor):
         return "".join(output_parts)
 
     def _filter_token(self, token: str) -> str:
-        """Filter special tags in current token only."""
+        """Filter special tags in current token with buffering."""
         if not token:
             return token
-
+        
+        # If tool usage cards are enabled, use the buffered filtering logic
         if self.tool_usage_enabled:
-            token = self._filter_tool_card(token)
-            if not token:
-                return ""
+            return self._filter_tool_card(token)
+            
+        # Otherwise, fall back to simple tag stripping if needed
+        if "<xai:tool_usage_card" in token or "</xai:tool_usage_card>" in token:
+            start_tag = "<xai:tool_usage_card"
+            end_tag = "</xai:tool_usage_card>"
+            
+            while start_tag in token:
+                start_idx = token.find(start_tag)
+                end_idx = token.find(end_tag, start_idx)
+                if end_idx != -1:
+                    token = token[:start_idx] + token[end_idx + len(end_tag):]
+                else:
+                    token = token[:start_idx]
+                    break
+            return token
 
         if not self.filter_tags:
             return token
@@ -646,7 +669,15 @@ class StreamProcessor(proc_base.BaseProcessor):
             if tag == "xai:tool_usage_card":
                 continue
             if f"<{tag}" in token or f"</{tag}" in token:
-                return ""
+                # To avoid losing data if the tag is partial or mixed with text,
+                # we should ideally use a buffer here too, but for now we just 
+                # check if it's a known unwanted tag and skip the whole token
+                # if it's likely just the tag.
+                if token.strip().startswith(f"<{tag}") and token.strip().endswith(">"):
+                    return ""
+                # If it's mixed, we just strip the tag parts
+                import re
+                return re.sub(rf"<{tag}[^>]*>.*?</{tag}>|<{tag}[^>]*/>", "", token, flags=re.DOTALL)
 
         return token
 
@@ -734,6 +765,7 @@ class StreamProcessor(proc_base.BaseProcessor):
         finish: str = None,
         tool_calls: list = None,
         usage: dict | None = None,
+        reasoning_content: str = None,
     ) -> str:
         """Build SSE response."""
         delta = {}
@@ -742,6 +774,8 @@ class StreamProcessor(proc_base.BaseProcessor):
             delta["content"] = ""
         elif tool_calls is not None:
             delta["tool_calls"] = tool_calls
+        elif reasoning_content is not None:
+            delta["reasoning_content"] = reasoning_content
         elif content:
             delta["content"] = content
 
@@ -802,20 +836,15 @@ class StreamProcessor(proc_base.BaseProcessor):
                     if not self.show_think:
                         continue
                     self.image_think_active = True
-                    if not self.think_opened:
-                        yield self._sse("<think>\n")
-                        self.think_opened = True
+                    self.think_opened = True
                     idx = img.get("imageIndex", 0) + 1
                     progress = img.get("progress", 0)
                     yield self._sse(
-                        f"正在生成第{idx}张图片中，当前进度{progress}%\n"
+                        reasoning_content=f"正在生成第{idx}张图片中，当前进度{progress}%\n"
                     )
                     continue
 
                 if mr := resp.get("modelResponse"):
-                    if self.image_think_active and self.think_opened:
-                        yield self._sse("\n</think>\n")
-                        self.think_opened = False
                     self.image_think_active = False
                     for url in proc_base._collect_images(mr):
                         parts = url.split("/")
@@ -882,18 +911,14 @@ class StreamProcessor(proc_base.BaseProcessor):
                     if in_think:
                         if not self.show_think:
                             continue
-                        if not self.think_opened:
-                            yield self._sse("<think>\n")
-                            self.think_opened = True
                     else:
                         if self.think_opened:
-                            yield self._sse("\n</think>\n")
                             self.think_opened = False
                             self._content_started = True
 
                     if in_think:
-                        self._record_content(filtered)
-                        yield self._sse(filtered)
+                        self.think_opened = True
+                        yield self._sse(reasoning_content=filtered)
                         continue
 
                     if self._tool_stream_enabled:
@@ -910,7 +935,7 @@ class StreamProcessor(proc_base.BaseProcessor):
                     yield self._sse(filtered)
 
             if self.think_opened:
-                yield self._sse("</think>\n")
+                self.think_opened = False
 
             if self._tool_stream_enabled:
                 for kind, payload in self._flush_tool_stream():
@@ -993,8 +1018,13 @@ class CollectProcessor(proc_base.BaseProcessor):
         self.tool_choice = tool_choice
         self.prompt_tokens = max(0, int(prompt_tokens or 0))
 
-    def _filter_content(self, content: str) -> str:
-        """Filter special tags in content."""
+    def _filter_content(self, content: str, strip_tools: bool = False) -> str:
+        """Filter special tags in content.
+        
+        Args:
+            content: The content to filter.
+            strip_tools: If True, remove tool cards entirely. If False, format them.
+        """
         if not content or not self.filter_tags:
             return content
 
@@ -1007,16 +1037,26 @@ class CollectProcessor(proc_base.BaseProcessor):
             if rollout_match:
                 rollout_id = rollout_match.group(1).strip()
 
-            result = re.sub(
-                r"<xai:tool_usage_card[^>]*>.*?</xai:tool_usage_card>",
-                lambda match: (
-                    f"{extract_tool_text(match.group(0), rollout_id)}\n"
-                    if extract_tool_text(match.group(0), rollout_id)
-                    else ""
-                ),
-                result,
-                flags=re.DOTALL,
-            )
+            if strip_tools:
+                # Xóa hoàn toàn thẻ công cụ khỏi nội dung chat chính
+                result = re.sub(
+                    r"<xai:tool_usage_card[^>]*>.*?</xai:tool_usage_card>",
+                    "",
+                    result,
+                    flags=re.DOTALL,
+                )
+            else:
+                # Định dạng lại thẻ công cụ cho phần reasoning (Thinking)
+                result = re.sub(
+                    r"<xai:tool_usage_card[^>]*>.*?</xai:tool_usage_card>",
+                    lambda match: (
+                        f"{extract_tool_text(match.group(0), rollout_id)}\n"
+                        if extract_tool_text(match.group(0), rollout_id)
+                        else ""
+                    ),
+                    result,
+                    flags=re.DOTALL,
+                )
 
         for tag in self.filter_tags:
             if tag == "xai:tool_usage_card":
@@ -1031,6 +1071,7 @@ class CollectProcessor(proc_base.BaseProcessor):
         response_id = ""
         fingerprint = ""
         content = ""
+        reasoning_content = ""
         # 兜底收集非 thinking 且无 messageStepId 的最终内容 token
         fallback_tokens: list[str] = []
         idle_timeout = get_config("chat.stream_timeout")
@@ -1052,12 +1093,15 @@ class CollectProcessor(proc_base.BaseProcessor):
                 if (llm := resp.get("llmInfo")) and not fingerprint:
                     fingerprint = llm.get("modelHash", "")
 
-                # 收集非 thinking 且无 messageStepId 的 token（最终内容兜底）
                 is_thinking = bool(resp.get("isThinking"))
                 has_step_id = bool(resp.get("messageStepId"))
-                if not is_thinking and not has_step_id:
-                    if tok := resp.get("token"):
-                        fallback_tokens.append(tok)
+                token = resp.get("token", "")
+
+                if token:
+                    if is_thinking or has_step_id:
+                        reasoning_content += token
+                    elif not is_thinking and not has_step_id:
+                        fallback_tokens.append(token)
 
                 if mr := resp.get("modelResponse"):
                     response_id = mr.get("responseId", "")
@@ -1162,7 +1206,8 @@ class CollectProcessor(proc_base.BaseProcessor):
         if not content and fallback_tokens:
             content = "".join(fallback_tokens)
 
-        content = self._filter_content(content)
+        content = self._filter_content(content, strip_tools=True)
+        reasoning_content = self._filter_content(reasoning_content, strip_tools=False)
 
         # Parse for tool calls if tools were provided
         finish_reason = "stop"
@@ -1177,6 +1222,7 @@ class CollectProcessor(proc_base.BaseProcessor):
         message_obj = {
             "role": "assistant",
             "content": content,
+            "reasoning_content": reasoning_content if reasoning_content else None,
             "refusal": None,
             "annotations": [],
         }

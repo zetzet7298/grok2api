@@ -853,11 +853,14 @@ async def chat_completions(request: ChatCompletionRequest):
                 return _streaming_error_response(e)
             raise
     else:
+        is_stream = (
+            request.stream if request.stream is not None else get_config("app.stream")
+        )
         try:
             result = await ChatService.completions(
                 model=request.model,
                 messages=[msg.model_dump() for msg in request.messages],
-                stream=request.stream,
+                stream=is_stream,
                 reasoning_effort=request.reasoning_effort,
                 temperature=request.temperature,
                 top_p=request.top_p,
@@ -866,7 +869,7 @@ async def chat_completions(request: ChatCompletionRequest):
                 parallel_tool_calls=request.parallel_tool_calls,
             )
         except Exception as e:
-            if request.stream is not False:
+            if is_stream is not False:
                 return _streaming_error_response(e)
             raise
 

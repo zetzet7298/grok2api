@@ -8,6 +8,9 @@ Complete command-line client for interacting with Grok2API reverse proxy.
 # Chat with Grok
 python scripts/grok_chat.py --model grok-4 --message "Hello, explain AI"
 
+# Vision - analyze images
+python scripts/grok_vision.py --model grok-4 --prompt "Mô tả ảnh này" --image photo.jpg
+
 # Generate images
 python scripts/grok_image.py --prompt "A futuristic city" --n 4
 
@@ -62,7 +65,43 @@ python scripts/grok_chat.py \
   --no-stream
 ```
 
-### 2. grok_image.py - Image Generation
+### 2. grok_vision.py - Vision (Image Understanding)
+
+```bash
+# Analyze single image
+python scripts/grok_vision.py \
+  --model grok-4 \
+  --prompt "Mô tả chi tiết bức ảnh này" \
+  --image photo.jpg
+
+# Multiple images
+python scripts/grok_vision.py \
+  --model grok-4 \
+  --prompt "So sánh 2 ảnh này" \
+  --image img1.jpg \
+  --image img2.jpg
+
+# URL image
+python scripts/grok_vision.py \
+  --model grok-4.1-fast \
+  --prompt "What's in this image?" \
+  --image https://example.com/image.jpg
+
+# Test all models
+python scripts/grok_vision.py \
+  --prompt "Describe this image" \
+  --image test.png \
+  --test-all-models
+
+# Non-streaming
+python scripts/grok_vision.py \
+  --model grok-4 \
+  --prompt "Extract text from this" \
+  --image document.png \
+  --no-stream
+```
+
+### 3. grok_image.py - Image Generation
 
 ```bash
 # Single image
@@ -163,7 +202,7 @@ All outputs are saved to `.grok-resources/` (or custom directory):
 
 ## Available Models
 
-### Chat Models
+### Chat Models (All support Vision)
 - `grok-3` - Standard Grok 3
 - `grok-3-mini` - Faster, lightweight
 - `grok-3-thinking` - With reasoning
@@ -175,6 +214,8 @@ All outputs are saved to `.grok-resources/` (or custom directory):
 - `grok-4.1-expert` - Grok 4.1 Expert
 - `grok-4.1-thinking` - Grok 4.1 with reasoning
 - `grok-4.20-beta` - Beta version
+
+**Note:** All chat models support vision capabilities through `image_url` format.
 
 ### Image Models
 - `grok-imagine-1.0` - Standard image generation
@@ -198,8 +239,9 @@ All scripts support these common options:
 1. **Use streaming** for long-running operations (chat, image generation)
 2. **Check metadata files** for request details and debugging
 3. **Use thinking models** for complex reasoning tasks
-4. **Generate multiple images** with grok-imagine-1.0-fast
-5. **Start with shorter videos** (6-10s) for faster generation
+4. **Vision works with all chat models** - use grok-4.1-fast for quick analysis
+5. **Generate multiple images** with grok-imagine-1.0-fast
+6. **Start with shorter videos** (6-10s) for faster generation
 
 ## Troubleshooting
 
@@ -230,6 +272,8 @@ chmod +x scripts/*.py
 ## API Reference
 
 See `references/api-endpoints.md` for complete API documentation.
+
+See `references/VISION.md` for vision capabilities and usage guide.
 
 ## Examples
 

@@ -95,53 +95,7 @@ python scripts/grok_image_edit.py \
   --n 2
 ```
 
-### 4. Vision (Image Understanding)
-
-All Grok chat models support vision capabilities through OpenAI-compatible `image_url` format:
-
-**Supported Models:** All chat models (grok-3, grok-4, grok-4.1, etc.)
-
-**Key Features:**
-- Analyze and describe images
-- Extract text (OCR)
-- Compare multiple images
-- Object detection
-- Chart/diagram analysis
-
-**Image Formats:**
-- Base64 data URLs: `data:image/png;base64,...`
-- HTTP/HTTPS URLs
-- Local file paths (auto-converted by script)
-
-**Example Usage:**
-```bash
-python scripts/grok_vision.py \
-  --model grok-4 \
-  --prompt "Mô tả chi tiết bức ảnh này" \
-  --image photo.jpg
-
-# Multiple images
-python scripts/grok_vision.py \
-  --model grok-4 \
-  --prompt "So sánh 2 ảnh này" \
-  --image img1.jpg \
-  --image img2.jpg
-
-# Test all models
-python scripts/grok_vision.py \
-  --prompt "Describe this" \
-  --image test.png \
-  --test-all-models
-```
-
-**Performance:**
-- Fast models: grok-4.1-fast (~5s), grok-3-mini (~4s)
-- Detailed: grok-4.1-expert (~26s), grok-4-heavy (~13s)
-- Reasoning: grok-4-thinking (~8s), grok-3-thinking (~6s)
-
-See `references/VISION.md` for complete documentation.
-
-### 5. Video Generation
+### 4. Video Generation
 
 Create videos from text prompts or images:
 
@@ -163,7 +117,7 @@ python scripts/grok_video.py \
   --quality high
 ```
 
-### 6. Admin Management
+### 5. Admin Management
 
 Manage API tokens, configuration, and cache:
 
@@ -222,7 +176,6 @@ export GROK_ADMIN_KEY="grok2api"    # For admin operations
 All scripts are in the `scripts/` directory:
 
 - `grok_chat.py` - Chat completions
-- `grok_vision.py` - Vision (image understanding)
 - `grok_image.py` - Image generation
 - `grok_image_edit.py` - Image editing
 - `grok_video.py` - Video generation
@@ -285,11 +238,10 @@ The scripts handle common errors gracefully:
 ## Tips for Best Results
 
 1. **Chat:** Use thinking models for complex reasoning tasks
-2. **Vision:** Use grok-4.1-fast for quick analysis, grok-4.1-expert for detailed descriptions
-3. **Images:** Use grok-imagine-1.0-fast for multiple variations
-4. **Videos:** Start with 6-10 seconds for faster generation
-5. **Streaming:** Always use streaming for long-running operations
-6. **Output:** Check `.grok-resources/metadata/` for request details
+2. **Images:** Use grok-imagine-1.0-fast for multiple variations
+3. **Videos:** Start with 6-10 seconds for faster generation
+4. **Streaming:** Always use streaming for long-running operations
+5. **Output:** Check `.grok-resources/metadata/` for request details
 
 ## API Endpoint Reference
 

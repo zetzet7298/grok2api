@@ -7,6 +7,7 @@ Complete command-line client skill for interacting with Grok2API reverse proxy. 
 ## Key Features
 
 ✅ **Chat with Grok Models** - All Grok 3, 4, and 4.1 variants including thinking models
+✅ **Vision (Image Understanding)** - All chat models support image analysis via image_url format
 ✅ **Image Generation** - Create images with Grok Imagine (single or batch)
 ✅ **Image Editing** - Edit existing images with text prompts
 ✅ **Video Creation** - Generate videos from text or images
@@ -25,12 +26,16 @@ grok2api-client/
 ├── SUMMARY.md                  # This file
 ├── scripts/
 │   ├── grok_chat.py           # Chat completions
+│   ├── grok_vision.py         # Vision (image understanding)
 │   ├── grok_image.py          # Image generation
+│   ├── grok_image_edit.py     # Image editing
 │   ├── grok_video.py          # Video generation
 │   ├── grok_admin.py          # Admin operations
 │   └── test_connection.py     # Connection tester
 ├── references/
-│   └── api-endpoints.md       # Complete API reference
+│   ├── api-endpoints.md       # Complete API reference
+│   └── VISION.md              # Vision capabilities guide
+├── test-results/              # Test reports
 └── evals/
     └── evals.json             # Test cases
 ```
@@ -40,6 +45,11 @@ grok2api-client/
 ### Chat
 ```bash
 python scripts/grok_chat.py --model grok-4 --message "Hello"
+```
+
+### Vision
+```bash
+python scripts/grok_vision.py --model grok-4 --prompt "Mô tả ảnh này" --image photo.jpg
 ```
 
 ### Image
@@ -71,11 +81,13 @@ All outputs automatically saved to:
 
 ## Supported Models
 
-**Chat:** grok-3, grok-3-mini, grok-3-thinking, grok-4, grok-4-thinking, grok-4-heavy, grok-4.1-mini, grok-4.1-fast, grok-4.1-expert, grok-4.1-thinking, grok-4.20-beta
+**Chat (with Vision):** grok-3, grok-3-mini, grok-3-thinking, grok-4, grok-4-thinking, grok-4-heavy, grok-4.1-mini, grok-4.1-fast, grok-4.1-expert, grok-4.1-thinking, grok-4.20-beta
 
 **Image:** grok-imagine-1.0, grok-imagine-1.0-fast, grok-imagine-1.0-edit
 
 **Video:** grok-imagine-1.0-video
+
+**Note:** All chat models support vision capabilities through `image_url` format.
 
 ## Requirements
 
@@ -87,6 +99,7 @@ All outputs automatically saved to:
 
 Use this skill when you need to:
 - Chat with Grok AI models
+- Analyze images with vision capabilities (OCR, description, comparison)
 - Generate images or videos
 - Edit images with AI
 - Manage API tokens and configuration
@@ -110,13 +123,17 @@ Use this skill when you need to:
 - **README.md** - Detailed usage guide with examples
 - **QUICKSTART.md** - Get started in 5 minutes
 - **api-endpoints.md** - Full API reference
+- **VISION.md** - Vision capabilities and usage guide
 
 ## Testing
 
 Test cases in `evals/evals.json` cover:
 1. Chat completion with response saving
-2. Multiple image generation
-3. Video creation with custom parameters
+2. Vision image analysis (all 11 models tested - 100% pass rate)
+3. Multiple image generation
+4. Video creation with custom parameters
+
+Comprehensive test reports available in `test-results/`.
 
 ## License
 
